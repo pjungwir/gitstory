@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# gitstory [log options] <filename>
+#
+# Shows the commit history for a given file
+# (or part of a file if you use -l 10 or -l 10,20).
+# This is a lot like git -L 10,20:filename
+# except the diffs include all changes to the file from each commit.
+
+if [ "$#" -lt 1 ]; then
+  echo "USAGE: gitstory [log options] <filename>"
+  exit 1
+fi
+
+filename="${!#}"
+
+for sha in `git log --format='%H' "$@"`; do
+  git show --no-patch "${sha}"
+  git diff "${sha}^..${sha}" "${filename}"
+done
